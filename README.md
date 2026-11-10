@@ -95,9 +95,8 @@ Fährt der Servo verkehrt herum, lässt sich die Richtung im Weichen-Dialog von 
 
 Der GCA50-Dialog in Rocrail kennt nur **8 Servos**. Servo 9–16 lassen sich programmieren und fahren korrekt. Der Dialog meldet aber Fehler (z. B. `sv127 is not supported`) und kann die Werte nicht auslesen und anzeigen.
 
-**Idee:** Das Modul meldet eine eigene Versionsnummer (z. B. 200). Der Dialog erkennt daran die 16-Servo-Variante und zeigt die zusätzlichen Servos an. Ein originaler GCA50 meldet weiterhin seine normale Version und bleibt voll kompatibel. Dazu läuft eine Diskussion im Rocrail-Forum. <!-- TODO: Link zum Forumsthema -->
-
-## Einstellungen im Sketch
+**Idee:** Das Modul meldet eine eigene Versionsnummer (z. B. 200). Der Dialog erkennt daran die 16-Servo-Variante und zeigt die zusätzlichen Servos an. Ein originaler GCA50 meldet weiterhin seine normale Version und bleibt voll kompatibel. Dazu läuft eine Diskussion im Rocrail-Forum. 
+www.rocrail.info/t34418f122-LocoNet-und-Servos.html#msg380693
 
 Oben im Sketch lassen sich anpassen:
 
