@@ -60,7 +60,7 @@ const uint16_t SERVO_TRAVEL_MS[6] = { 0, 1000, 2000, 4000, 7000, 10000 };
 // SV0 = Version, SV1 = Adresse, SV2 = Subadresse,
 // SV3..SV50 = 16 Ports x (config, value1, value2)
 uint8_t sv[256];
-const uint8_t FW_VERSION = 107;
+const uint8_t FW_VERSION = 200;
 const uint8_t MAGIC = 0xA5;
 bool svDirty = false;
 uint32_t svDirtyMs = 0;
