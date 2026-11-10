@@ -33,8 +33,13 @@ Der Pico kostet nur wenige Euro und steuert bis zu **16 Servos** über sein Hard
 | Servos | z. B. SG90 / MG90S |
 | 5-V-Netzteil für die Servos | **nicht** aus dem Pico versorgen; Masse von Netzteil, Pico und LocoNet verbinden |
 
-<!-- TODO: Schaltplan / Foto der LocoNet-Anschaltung einfügen, z. B. ![Aufbau](docs/aufbau.jpg) -->
+### Schaltplan
 
+[Schaltplan der LocoNet-Anschaltung (PDF)](loconet-pico.pdf)
+
+> [!NOTE]
+> Die Servos brauchen eine externe 5-V-Versorgung. USB reicht nur zum Testen mit höchstens 1–2 Servos.
+> Die Masse (GND) von Pico, externer Stromquelle und LocoNet muss verbunden sein.
 ### Pinbelegung
 
 | Port | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 |
