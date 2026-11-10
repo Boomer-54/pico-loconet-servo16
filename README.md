@@ -98,6 +98,7 @@ Der GCA50-Dialog in Rocrail kennt nur **8 Servos**. Servo 9–16 lassen sich pro
 **Idee:** Das Modul meldet eine eigene Versionsnummer (z. B. 200). Der Dialog erkennt daran die 16-Servo-Variante und zeigt die zusätzlichen Servos an. Ein originaler GCA50 meldet weiterhin seine normale Version und bleibt voll kompatibel. Dazu läuft eine Diskussion im Rocrail-Forum. 
 www.rocrail.info/t34418f122-LocoNet-und-Servos.html#msg380693
 
+## Einstellungen im Sketch
 Oben im Sketch lassen sich anpassen:
 
 | Konstante | Standard | Zweck |
