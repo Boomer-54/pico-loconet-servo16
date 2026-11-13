@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Projekt: https://github.com/<dein-github-name>/pico-loconet-servo16
+// Projekt: https://github.com/Boomer-54/pico-loconet-servo16
 // GCA50/LocoIO-Emulator für den Raspberry Pi Pico (arduino-pico)
 // Basis: loconet_servo8-5. Neu: Servos über das Hardware-PWM des RP2040 statt Servo.h,
 // dadurch bis zu 16 Servos möglich (Port 1..SERVO_PORTS).
