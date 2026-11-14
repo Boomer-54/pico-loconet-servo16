@@ -50,6 +50,11 @@ LocoNet: GPIO 0 = TX, GPIO 1 = RX.
 
 GPIO 2–17 belegen alle 16 PWM-Kanäle des RP2040 genau einmal, deshalb können alle 16 Ports gleichzeitig Servos sein. Wer die Pins in `pinMap[]` ändert, muss darauf achten, dass zwei Servo-Ports nicht auf demselben PWM-Kanal liegen. Der Sketch warnt beim Start im seriellen Monitor.
 
+## Getestet mit
+
+- Zentrale: YaMoRC YD7001
+- Rocrail ab Revision 7547
+
 ## Software installieren
 
 1. **Arduino IDE** installieren.
