@@ -57,7 +57,7 @@ GPIO 2–17 belegen alle 16 PWM-Kanäle des RP2040 genau einmal, deshalb können
 
 ## Software installieren
 
-**Ohne Arduino-IDE:** Die fertige Datei `loconet_servo16_v200.1.uf2` gibt es unter [Releases](../../releases/latest). BOOTSEL am Pico gedrückt halten, USB einstecken und die Datei auf das Laufwerk **RPI-RP2** ziehen.
+**Ohne Arduino-IDE:** Die fertige Datei `loconet_servo16_v201.uf2` gibt es unter [Releases](../../releases/latest). BOOTSEL am Pico gedrückt halten, USB einstecken und die Datei auf das Laufwerk **RPI-RP2** ziehen.
 
 **Mit Arduino-IDE:**
 
@@ -102,7 +102,7 @@ Fährt der Servo verkehrt herum, lässt sich die Richtung im Weichen-Dialog von 
 
 ## Bekannte Einschränkung: Servo 9–16 im Rocrail-Dialog
 
-**Gelöst:** Das Modul meldet die Versionsnummer 200. Ab Rocrail-Build 7547 (Daily Build vom 11.11.2026) erkennt der Dialog daran die 16-Servo-Variante. Alle 16 Servos lassen sich programmieren, auslesen und ansteuern. Ein originaler GCA50 meldet weiterhin seine normale Version und bleibt voll kompatibel. Siehe [Diskussion im Rocrail-Forum](https://www.rocrail.info/t34418f122-LocoNet-und-Servos.html#msg380693).
+**Gelöst:** Ab Rocrail-Build 7547 (Daily Build vom 11.11.2026) unterstützt der Dialog die 16-Servo-Variante. Alle 16 Servos lassen sich programmieren, auslesen und ansteuern. Ein originaler GCA50 bleibt voll kompatibel. Siehe [Diskussion im Rocrail-Forum](https://www.rocrail.info/t34418f122-LocoNet-und-Servos.html#msg380693).
 
 
 ## Einstellungen im Sketch
