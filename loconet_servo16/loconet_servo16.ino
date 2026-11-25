@@ -17,6 +17,7 @@
 #include "hardware/pwm.h"
 #include "hardware/gpio.h"
 #include "hardware/clocks.h"
+#include "hardware/uart.h"
 
 // ===================== Pins =====================
 #define TXPin 0
@@ -60,7 +61,7 @@ const uint16_t SERVO_TRAVEL_MS[6] = { 0, 1000, 2000, 4000, 7000, 10000 };
 // SV0 = Version, SV1 = Adresse, SV2 = Subadresse,
 // SV3..SV50 = 16 Ports x (config, value1, value2)
 uint8_t sv[256];
-const uint8_t FW_VERSION = 200;
+const uint8_t FW_VERSION = 201;
 const uint8_t MAGIC = 0xA5;
 bool svDirty = false;
 uint32_t svDirtyMs = 0;
@@ -85,6 +86,7 @@ uint8_t rxLen = 0, rxNeed = 0;
 struct TxMsg {
   uint8_t len;
   uint8_t tries;
+  uint16_t waitUs;  // Busruhe vor dem nächsten Sendeversuch
   uint8_t b[16];
 };
 const uint8_t TXQ_SIZE = 24;
@@ -196,12 +198,21 @@ bool lnReceive() {
 }
 
 // ===================== LocoNet senden (Warteschlange) =====================
+// Busruhe vor dem Senden: CD-Backoff 20 Bit + Prioritätsverzögerung 6 Bit (1 Bit = 60 us),
+// dazu eine zufällige Zahl Bitzeiten. Ohne den Zufall senden zwei Module, die auf denselben
+// Broadcast antworten (z. B. Rocrail-Abfrage), exakt gleichzeitig und kollidieren bei jedem
+// Wiederholversuch erneut.
+uint16_t lnBackoffUs(uint8_t tries) {
+  return 1560 + 60 * random(tries ? 64 : 16);
+}
+
 bool lnQueue(const uint8_t *msg, uint8_t len) {
   uint8_t next = (txHead + 1) % TXQ_SIZE;
   if (next == txTail || len > 16) return false;  // Warteschlange voll
   memcpy(txq[txHead].b, msg, len);
   txq[txHead].len = len;
   txq[txHead].tries = 0;
+  txq[txHead].waitUs = lnBackoffUs(0);
   txHead = next;
   return true;
 }
@@ -209,13 +220,18 @@ bool lnQueue(const uint8_t *msg, uint8_t len) {
 // Sendet höchstens eine Nachricht pro Aufruf, wenn der Bus lange genug still war
 void lnTxService() {
   if (txHead == txTail) return;
-  // CD-Backoff 20 Bit + Prioritätsverzögerung 6 Bit (1 Bit = 60 us)
-  if (micros() - lastRxUs < 1560) return;
-
   TxMsg &m = txq[txTail];
+  // Der UART meldet ein Byte erst nach dem Stoppbit. Ein Startbit, das gerade
+  // läuft (Leitung LOW), zählt deshalb auch schon als Busbelegung.
+  if (!gpio_get(RXPin)) lastRxUs = micros();
+  if (micros() - lastRxUs < m.waitUs) return;
+
   bool ok = true;
-  for (uint8_t i = 0; i < m.len && ok; i++) {
+  uint8_t i;
+  int echo = -1;  // -1 = kein Echo
+  for (i = 0; i < m.len && ok; i++) {
     Serial1.write(m.b[i]);
+    echo = -1;
     uint32_t t = micros();
     while (!Serial1.available()) {
       if (micros() - t > 3000) {
@@ -224,14 +240,28 @@ void lnTxService() {
       }  // kein Echo
     }
     if (ok) {
-      if (Serial1.read() != m.b[i]) ok = false;  // Echo falsch: Kollision
+      echo = Serial1.read();
+      if (echo != m.b[i]) ok = false;  // Echo falsch: Kollision
       lastRxUs = micros();
     }
   }
-  if (ok || ++m.tries >= 4) {
+  if (!ok) {
+    i--;
+    if (echo < 0) Serial.printf("TX Versuch %u: Byte %u (%02X) kein Echo\n", m.tries + 1, i, m.b[i]);
+    else Serial.printf("TX Versuch %u: Byte %u gesendet %02X, Echo %02X\n", m.tries + 1, i, m.b[i], echo);
+  }
+  if (!ok) {
+    // Kollision: BREAK (15 Bit LOW), damit auch der andere Sender abbricht
+    uart_set_break(uart0, true);
+    delayMicroseconds(900);
+    uart_set_break(uart0, false);
+    delayMicroseconds(200);
+  }
+  if (ok || ++m.tries >= 8) {
     if (!ok) Serial.println("TX aufgegeben");
     txTail = (txTail + 1) % TXQ_SIZE;
   } else {
+    m.waitUs = lnBackoffUs(m.tries);
     while (Serial1.available()) Serial1.read();  // Reste verwerfen
     rxLen = 0;
     lastRxUs = micros();
@@ -552,6 +582,8 @@ void setup() {
   Serial.println("Start");
 
   svLoad();
+  // Zufall für den Sende-Backoff, je Modul verschieden
+  randomSeed(((uint32_t)sv[1] << 8 | sv[2]) ^ micros() ^ rp2040.hwrand32());
   Serial1.setPinout(TXPin, RXPin);
 
   Serial1.begin(16666);
