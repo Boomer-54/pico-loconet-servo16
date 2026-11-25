@@ -57,7 +57,7 @@ GPIO 2–17 belegen alle 16 PWM-Kanäle des RP2040 genau einmal, deshalb können
 
 ## Software installieren
 
-**Ohne Arduino-IDE:** Die fertige Datei `loconet_servo16_v200.uf2` gibt es unter [Releases](../../releases/latest). BOOTSEL am Pico gedrückt halten, USB einstecken und die Datei auf das Laufwerk **RPI-RP2** ziehen.
+**Ohne Arduino-IDE:** Die fertige Datei `loconet_servo16_v200.1.uf2` gibt es unter [Releases](../../releases/latest). BOOTSEL am Pico gedrückt halten, USB einstecken und die Datei auf das Laufwerk **RPI-RP2** ziehen.
 
 **Mit Arduino-IDE:**
 
